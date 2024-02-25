@@ -7,7 +7,7 @@ import ham from "../../assets/images/햄버거.svg";
 import goods from "../../data/goods.json";
 import { useCategoryValue } from "../../atom/category.atom";
 import CardMobile from "../../components/CardMobile";
-import { useGetSearch } from "../../queries/getSearch";
+import { useGetProductSearchList } from "../../queries/getProductSearchList";
 
 export default function Search() {
     const [menus, setMenu] = useState([
@@ -15,10 +15,9 @@ export default function Search() {
         { title: "내용", key: "descript", checked: false },
         { title: "제목+내용", key: "subdesc", checked: true },
     ]);
-
     const category = useCategoryValue();
     const [inputValue, setInputValue] = useState("");
-    const { data: good } = useGetSearch();
+    const [keyword, setKeyword] = useState("");
     const [checkedCategories, setCheckedCategories] = useState({
         전체: false,
         생활: false,
@@ -101,6 +100,13 @@ export default function Search() {
         setInputValue(event.target.value);
     };
 
+    const orderMappings = {
+        최신순: "recent",
+        오래된순: "oldest",
+        마감순: "imminent",
+    };
+    const mappedOrder = orderMappings[selectedOrder];
+
     const handleSearchBtn = (event) => {
         // Log the current state of checkedCategories, selectedState, and selectedOrder
         const selectedCategoryIndices = Object.entries(checkedCategories)
@@ -111,33 +117,34 @@ export default function Search() {
             .filter(([category, isChecked]) => isChecked)
             .map(([category]) => category)
             .join(",");
-            const selectedSearchCriteria = menus.find(menu => menu.checked)?.key;
+        const selectedSearchCriteria = menus.find((menu) => menu.checked)?.key;
 
         const selectedStates = Object.entries(selectedState)
             .filter(([state, isSelected]) => isSelected)
             .map(([state]) => state)
             .join(",");
-        console.log(
-                // inputValue +
-                "state=" +
-                selectedStates +
-                "&category=" +
-                selectedCategoryIndices +
-                "&order=" +
-                selectedOrder+
-                "&search=" +selectedSearchCriteria
-                
+        let dkeyword =
+            "keyword=" +
+            inputValue +
+            // "&state=" +
+            // selectedStates +
+            "&category=" +
+            selectedCategoryIndices +
+            "&order=" +
+            mappedOrder +
+            "&search=" +
+            selectedSearchCriteria;
 
-//                 검색 기준(search) : sub |  descript | subdesc
+        setKeyword(dkeyword);
+        //                 검색 기준(search) : sub |  descript | subdesc
 
-// 정렬 기준(order) : 
+        // 정렬 기준(order) :
 
-// 진행 상태
-        );
+        // 진행 상태
     };
-
-    
-
+    useEffect(() => {}, [keyword]);
+    const { data } = useGetProductSearchList(keyword);
+    console.log(data);
     return (
         <>
             <Wrapper>
@@ -151,6 +158,7 @@ export default function Search() {
                                     name=""
                                     id=""
                                     placeholder="검색어를 입력해주세요."
+                                    value={inputValue}
                                     onChange={handleInputChange}
                                 />
                                 <button onClick={handleSearchBtn}>
@@ -163,16 +171,20 @@ export default function Search() {
                         <Li>
                             <span>검색기준</span>
                             <div>
-                                {menus.map((menu, index) => (
-                                    <Btn
-                                        checked={menu.checked}
-                                        title={menu.title}
-                                        key={index}
-                                        onClick={() => handleMenuClick(index)}
-                                    >
-                                        {menu.title}
-                                    </Btn>
-                                ))}
+                                {
+                                    menus.map((menu, index) => (
+                                        <Btn
+                                            checked={menu.checked}
+                                            title={menu.title}
+                                            key={index}
+                                            onClick={() =>
+                                                handleMenuClick(index)
+                                            }
+                                        >
+                                            {menu.title}
+                                        </Btn>
+                                    ))
+                                }
                             </div>
                         </Li>
                         <Li>
@@ -230,9 +242,7 @@ export default function Search() {
                 </div>
                 <Div>
                     <>
-                        {goods.goods
-                            .flatMap((good) => Array(3).fill(good))
-                            .map((good) => (
+                        {data&& data.map((good) => (
                                 <Card good={good} />
                             ))}
                     </>
