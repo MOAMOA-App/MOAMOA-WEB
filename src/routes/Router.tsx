@@ -11,6 +11,7 @@ import Login from "../pages/login/Login";
 import SignUp from "../pages/signUp/SignUp";
 import Goods from "../pages/goods/Goods";
 import Search from "../pages/search/Search";
+import Modify from "../pages/write/Modify";
 
 export default function Router() {
     return (
@@ -24,6 +25,8 @@ export default function Router() {
                         <Route path="/" element={<Home />} />
                         <Route path="/chat" element={<Chat />} />
                         <Route path="/write" element={<Write />} />
+                        <Route path="/modify/:pid" element={<Modify />} />
+
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/join" element={<Profile />} />
                         <Route path="/search" element={<Search />} />

@@ -1,11 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import { Profile } from "../../queries/getProfile";
 import styled from "styled-components";
+import { usePutPassword } from "../../queries/putPassword";
+import { useForm } from "react-hook-form";
+import { getUserInfo } from "../../utils/localStorage";
+
 interface ProfileSettingProps {
     info: Profile;
 }
 
+interface FormData {
+    oldPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+
+    email: string;
+}
+
 export default function ProfileSetting({ info }: ProfileSettingProps) {
+    const { mutateAsync: putPassword } = usePutPassword();
+    const { register, handleSubmit, watch, reset } = useForm<FormData>();
+    const userInfo = getUserInfo();
+
+    const handleBtn = async (data: FormData) => {
+        console.log(data);
+
+        try {
+            await putPassword({ ...data, email: "rudfls114@naver.com" });
+            // reset(); // Reset form after successful password change
+        } catch (error) {
+            // Handle error here
+            console.error("Error changing password:", error);
+        }
+    };
+
+    const onSubmit = async (data: FormData) => {
+        console.log(data);
+
+        if (data.newPassword !== data.confirmNewPassword) {
+            alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        try {
+            await putPassword({
+                email: userInfo.email,
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+            });
+            reset(); // Reset form after successful password change
+        } catch (error) {
+            // Handle error here
+            console.error("Error changing password:", error);
+        }
+        // 여기서 비밀번호 변경 요청을 서버로 보내는 로직을 추가하세요.
+        // 성공적으로 변경되면 사용자에게 알리는 등의 작업을 수행할 수 있습니다.
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+    };
+
     return (
         <Wrap>
             <Cont>
@@ -21,30 +72,46 @@ export default function ProfileSetting({ info }: ProfileSettingProps) {
             </Cont>
             <Cont>
                 <h2>계정 정보 변경</h2>
-                <Box>
-                    <Label>현재 비밀번호</Label>
-                    <Inp
-                        type="text"
-                        name=""
-                        id=""
-                        placeholder="현재 비밀번호를 입력하세요."
-                    />
-                </Box>
-                <Box>
-                    <Label>새 비밀번호</Label>
-                    <Inp
-                        type="text"
-                        name=""
-                        id=""
-                        placeholder="새 비밀번호를 입력하세요."
-                    />
-                </Box>
-                <Box>
-                    <Label>새 비밀번호 확인</Label>
-                    <Inp type="text" name="" id="" />
 
-                    <Btn>수정</Btn>
-                </Box>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Box>
+                        <Label>현재 비밀번호</Label>
+                        <Inp
+                            type="password"
+                            id="oldPassword"
+                            {...register("oldPassword")}
+                        />
+                        {/* {errors.oldPassword && (
+                            <span>현재 비밀번호를 입력하세요.</span>
+                        )} */}
+                    </Box>
+                    <Box>
+                        <Label>새 비밀번호</Label>
+                        <Inp type="password" {...register("newPassword")} />
+                        {/* {errors.newPassword && (
+            <span>새 비밀번호를 입력하세요.</span>
+        )} */}
+                        {/* {errors.confirmNewPassword && (
+            <span>{errors.confirmNewPassword.message}</span>
+        )} */}
+                    </Box>
+
+                    <Box>
+                        <Label>새 비밀번호 확인</Label>
+                        <Inp
+                            type="password"
+                            id="confirmNewPassword"
+                            {...register("confirmNewPassword")}
+                            // {
+                            //     required: true,
+                            //     validate: (value: string) =>
+                            //         value === watch("newPassword") ||
+                            //         "새 비밀번호와 일치하지 않습니다.",
+                            // })}
+                        />
+                        <Btn type="submit">수정</Btn>
+                    </Box>
+                </form>
             </Cont>
         </Wrap>
     );

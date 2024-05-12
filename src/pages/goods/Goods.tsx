@@ -9,7 +9,7 @@ import Card from "../../components/Card";
 import goods from "../../data/goods.json";
 import MapContainer from "../../hooks/KakaoMapScript";
 import { useGetProduct } from "../../queries/getProduct";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getUserInfo } from "../../utils/localStorage";
 import ModalPortal from "../../components/modal/ModalPortal";
 import PartyModal from "../../components/modal/PartyModal";
@@ -20,6 +20,7 @@ import { useGetAnnounceList } from "../../queries/getAnnounceList";
 import { usePostHeart } from "../../queries/postHeart";
 import { getDate } from "../../utils/getTime";
 import { useNumberValue } from "../../atom/number.atom";
+import { useProductWrite } from "../../atom/product.atom";
 
 interface FormValue {
     contents: string;
@@ -28,14 +29,17 @@ interface FormValue {
 function Goods() {
     const arr = [1, 2, 3, 4];
     const numberValue = useNumberValue();
+    const navigate = useNavigate();
 
     // console.log(goods.goods[0]);
     const { goodsid } = useParams();
+    console.log(goodsid);
     const userInfo = getUserInfo();
     const { modalOpen, setModalOpen } = useCustomModal();
     const { data: good, isLoading } = useGetProduct(
         numberValue as unknown as string
     );
+    const setProductState = useProductWrite();
     const { data: announce, isLoading: announceIsLoading } = useGetAnnounceList(
         numberValue as unknown as string
     );
@@ -63,8 +67,6 @@ function Goods() {
     };
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
-        console.log(data);
-
         postAnnounce({
             pid: Number(goodsid),
             lock: false,
@@ -77,7 +79,12 @@ function Goods() {
         // 필요한 로직을 여기에 추가합니다. 예를 들면 상태 설정 등
     };
     const showModal = (e: any) => {
-        setModalOpen(true);
+        if (good.user.email !== userInfo.email) {
+            setModalOpen(true);
+        } else {
+            setProductState(good);
+            navigate(`/modify/${numberValue}`);
+        }
     };
     return (
         <>

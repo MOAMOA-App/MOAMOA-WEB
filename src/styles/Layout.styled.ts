@@ -51,7 +51,7 @@ export const Write = styled(Link)`
     border-radius: 3px;
     align-items: center;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     color: #ffffff;
     font-weight: 700;
     padding: 14px;
@@ -76,8 +76,7 @@ export const Main = styled.main`
     padding-top: 110px;
     margin: 0 8%;
     @media (max-width: 768px) {
-
-    margin: 0;
+        margin: 0;
 
         /* flex-direction: column; */
         /* font-size: 12px; */

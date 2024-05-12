@@ -30,6 +30,6 @@
         ".next/types/**/*.ts",
         "next.config.js",
         "src/components/RequireAuth.tsx"
-, "src/pages/search/Search.jsx", "src/hooks/useCustomModal.jsx"    ],
+, "src/pages/search/Search.jsx", "src/hooks/useCustomModal.jsx", "src/pages/home/Home.tsx"    ],
     "exclude": ["node_modules"]
 }

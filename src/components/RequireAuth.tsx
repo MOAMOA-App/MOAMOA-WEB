@@ -15,7 +15,7 @@ function RequireAuth() {
 
     return (
         <>
-            {auth ? (
+            {!auth ? (
                 <>
                     <Navbar />
                     <Outlet />

@@ -33,9 +33,12 @@ export default function Card({ good }: CardProps) {
     };
 
     return (
-        <S.Warp onClick={() => {
-            numberWrite(good.id)
-            navigate(`/goods`)} }>
+        <S.Warp
+            onClick={() => {
+                numberWrite(good.id);
+                navigate(`/goods`);
+            }}
+        >
             <S.Category>
                 <div>
                     <p className="category">{`${good.category}`}</p>
@@ -49,10 +52,7 @@ export default function Card({ good }: CardProps) {
             </S.Category>
             <S.Img>
                 {good.mainImage && (
-                    <img
-                        src={`https://moamoa.info${good.mainImage}`}
-                        alt=""
-                    />
+                    <img src={`https://moamoa.info${good.mainImage}`} alt="" />
                 )}
             </S.Img>
             <S.Title>{good.title}</S.Title>

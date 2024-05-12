@@ -2,7 +2,11 @@ import { apiClient } from "../libary/reactQueryProvider";
 import { ApiError, ApiResponse, MutationConfigOptions } from "../types";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
-import { setAccessToken, setRefreshToken, setUserInfo } from "../utils/localStorage";
+import {
+    setAccessToken,
+    setRefreshToken,
+    setUserInfo,
+} from "../utils/localStorage";
 
 interface Request {
     email: string;
@@ -41,7 +45,7 @@ export const usePostLogin = (configOptions?: MutationConfigOptions) => {
             if (res) {
                 setAccessToken(res.accessToken);
                 setRefreshToken(res.refreshToken);
-                setUserInfo(res.user)
+                setUserInfo(res.user);
             }
         },
         onSettled: () => {

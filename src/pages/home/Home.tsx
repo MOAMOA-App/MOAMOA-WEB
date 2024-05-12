@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../../components/Card";
 import goods from "../../data/goods.json";
 import search from "../assets/images/search_orange.svg";
@@ -10,50 +10,48 @@ import { useGetProductList } from "../../queries/getProductList";
 import { Goods } from "@/types/goods.types";
 
 export default function Home() {
-    // console.log(goods.goods);
-    const titleArr = [
-        ["마감임박", "마감이 가까워요"],
-        ["인기순", "사용자들이 선호하는 상품"],
-        ["최신순", "What’s new?"],
-    ];
     const navigate = useNavigate();
-    const { data, isLoading } = useGetProductList();
+    const [isLoadingAll, setIsLoadingAll] = useState(true);
+    const { data: productListQuery1, isLoading: isLoading1 } = useGetProductList('recent');
+    const { data: productListQuery2, isLoading: isLoading2 } = useGetProductList('oldest');
+    const { data: productListQuery3, isLoading: isLoading3 } = useGetProductList('imminent');
 
     useEffect(() => {
-        !isLoading && console.log(data);
+        setIsLoadingAll(isLoading1 || isLoading2 || isLoading3);
+    }, [isLoading1, isLoading2, isLoading3]);
+
+    useEffect(() => {
+        console.log(productListQuery1);
     }, []);
+
+    const titleArr = [
+        ["마감임박", "마감이 가까워요", productListQuery1],
+        ["인기순", "사용자들이 선호하는 상품", productListQuery2],
+        ["최신순", "What’s new?", productListQuery3],
+    ];
+
 
     return (
         <S.Wrap>
-            {/* <S.HomeSearchBar>
-                <input
-                    type="text"
-                    name=""
-                    id=""
-                    placeholder="검색어를 입력해주세요."
-                />
-                <img src={search} alt="" />
-            </S.HomeSearchBar> */}
             <Category />
-
-            {!isLoading &&
-                titleArr.map((title) => (
+            {isLoadingAll ? (
+                <div>Loading...</div>
+            ) : (
+                titleArr.map(([title, description, productListQuery])=> (
                     <S.RowCont>
-                        <HomeTitle title={title} />
+                        <HomeTitle title={title} description={description}/>
                         <S.ContCard>
-                            {data
-                                // .filter(
-                                //     (good: Goods) => good.status === "READY"
-                                // )
+                            {productListQuery
                                 .slice(0, 5)
                                 .map((good: Goods) => (
-                                    <div>
+                                    <div key={good.id}>
                                         <Card good={good}></Card>
                                     </div>
                                 ))}
                         </S.ContCard>
                     </S.RowCont>
-                ))}
+                ))
+            )}
         </S.Wrap>
     );
 }

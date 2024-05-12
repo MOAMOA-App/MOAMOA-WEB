@@ -3,15 +3,16 @@ import styled from "styled-components";
 import arrow from "../assets/images/arrow_right.svg";
 
 type TitleProps = {
-    title: string[];
+    title: string;
+    description: string;
 };
 
-export default function HomeTitle({ title }: TitleProps) {
+export default function HomeTitle({ title, description }: TitleProps) {
     return (
         <Wrap>
-            <p className="ment">{title[1]}</p>
+            <p className="ment">{description}</p>
             <Cont>
-                <p className="tit">{title[0]}</p>
+                <p className="tit">{title}</p>
                 <button type="button">
                     <p>전체보기 </p>
                     <img src={arrow} alt="" />

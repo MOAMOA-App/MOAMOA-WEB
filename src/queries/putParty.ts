@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 
 interface Request {
-    productId: number;
-    status: string;
+    product: number;
+    pid: number;
 }
 
 interface RequestEmailResponse {
@@ -16,23 +16,23 @@ interface RequestEmailResponse {
 
 type Response = ApiResponse<RequestEmailResponse>;
 
-const URL_PATH = `api/product/status`;
+const URL_PATH = `api/product`;
 const MUTATION_KEY = [URL_PATH];
 
-export const postState = async (data: Request) => {
+export const putParty = async (data: Request) => {
     const res = await apiClient.put<Request, AxiosResponse<Response>>(
-        URL_PATH,
+        `${URL_PATH}/${data.product}/party/${data.pid}`,
         data
     );
 
     return res.data;
 };
 
-export const usePostState = (configOptions?: MutationConfigOptions) => {
+export const usePutParty = (configOptions?: MutationConfigOptions) => {
     const queryClient = useQueryClient();
     const info = useMutation<Response, AxiosError<ApiError>, Request, void>({
         mutationKey: MUTATION_KEY,
-        mutationFn: (req) => postState(req),
+        mutationFn: (req) => putParty(req),
         ...configOptions?.options,
         onSuccess: (res) => {
             queryClient.invalidateQueries(["partyList"]);

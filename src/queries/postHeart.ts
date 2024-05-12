@@ -37,6 +37,9 @@ export const usePostHeart = (configOptions?: MutationConfigOptions) => {
         ...configOptions?.options,
         onSuccess: (res) => {
             // Invalidate and refetch
+            if (res.message !== "OK") {
+                alert("본인 게시글은 찜할 수 없습니다.");
+            }
             queryClient.invalidateQueries(QUERY_KEY);
         },
         onError: (error) => {

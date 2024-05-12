@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useGetPartyProductList } from "../../queries/getPartyProductList";
 import { useGetHeartProductList } from "../../queries/getHeartProductList";
 import cart from "../../assets/images/cart.svg";
+import { useProductWrite } from "../../atom/product.atom";
 
 interface Props {
     type: string;
@@ -15,7 +16,7 @@ interface Props {
 
 export default function CreateGoods({ type }: Props) {
     const arr = [1, 2, 3, 4, 5, 6];
-
+    const setProductValue = useProductWrite();
     const { data: myData, isLoading: myLoading } = useGetMyProductList();
     const { data: partyData, isLoading: partyLoading } =
         useGetPartyProductList();
@@ -28,6 +29,7 @@ export default function CreateGoods({ type }: Props) {
         console.log(good);
 
         navigate(`/product/${good.id}/joinlist`);
+        setProductValue(good);
     };
 
     const handleParty = (good: Goods) => {
@@ -55,7 +57,7 @@ export default function CreateGoods({ type }: Props) {
                     partyData &&
                     partyData.map((good) => (
                         <div onClick={() => handleParty(good)}>
-                            <Card good={good}></Card>
+                            <Card good={good}></Card> 
                         </div>
                     ))}
 
@@ -66,6 +68,7 @@ export default function CreateGoods({ type }: Props) {
                             <Card good={good}></Card>
                         </div>
                     ))}
+                    
             </Div>
         </Wrap>
     );
@@ -122,3 +125,5 @@ export const Search = styled.input`
     margin-left: 7px;
     border-radius: 25px;
 `;
+
+

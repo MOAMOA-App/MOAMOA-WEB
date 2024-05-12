@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 
 export interface Request {
-    images : File[];
+    images: string[];
     idx: number;
     category: string;
 }

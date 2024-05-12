@@ -10,9 +10,9 @@ import defaultChecked from "../assets/images/defaultChecked.svg";
 import ModalPortal from "../../components/modal/ModalPortal";
 import MapModal from "../../components/modal/MapModal";
 import useCustomModal from "../../hooks/useCustomModal";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
 
 import * as S from "../../styles/Write.styled";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -20,7 +20,6 @@ import KakaoMapScript from "../../hooks/KakaoMapScript";
 import MapContainer from "../../hooks/KakaoMapScript";
 import { usePostProduct } from "../../queries/postProduct";
 import { usePostImage } from "../../queries/postImage";
-
 interface FormValue {
     title: string;
     description: string;
@@ -182,7 +181,7 @@ function Write() {
             status: "READY",
             sellPrice: Number(data.sellPrice),
             description: data.description,
-            finishedAt: "23-08-10 12:00",
+            finishedAt: "24-08-10 12:00",
             maxCount: Number(data.maxCount),
             choiceSend: "택배",
             category: selectedCategory,
@@ -190,13 +189,12 @@ function Write() {
         };
 
         let res = await postProduct(resData);
-        navigate("/")
-        // postImage({
-        //     idx: res.id,
-        //     category: "product",
-        //     images: imgFiles,
-        // });
-        console.log(res.id);
+        navigate("/");
+        postImage({
+            idx: res.id,
+            category: "product",
+            images: imgFiles,
+        });
     };
 
     return (
@@ -204,10 +202,6 @@ function Write() {
             <div>
                 {imgFiles[0] ? (
                     <S.ImgCont>
-                        {/* 
-                        
-                        */}
-
                         <div className="full">
                             <img
                                 className="mainImg"
@@ -245,7 +239,7 @@ function Write() {
                             multiple
                             ref={upload}
                             onChange={saveImgFiles}
-                            style={{ display: "none" }}
+                            // style={{ display: "none" }}
                         />
                     </S.ImgEmptyCont>
                 )}
@@ -273,7 +267,7 @@ function Write() {
                 <label htmlFor="">모집기간</label>
                 <S.DateCont>
                     <S.InpDateCont>
-                        {/* <DatePicker
+                        <DatePicker
                             className="datePicker"
                             dateFormat="yyyy.MM.dd" // 날짜 형태
                             shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
@@ -281,12 +275,12 @@ function Write() {
                             maxDate={new Date()} // maxDate 이후 날짜 선택 불가
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date)}
-                        /> */}
+                        />
                         <img src={calendar} alt="" />
                     </S.InpDateCont>
                     <span>~</span>
                     <S.InpDateCont>
-                        {/* <DatePicker
+                        <DatePicker
                             className="datePicker"
                             calendarClassName="calenderWrapper"
                             dateFormat="yyyy.MM.dd" // 날짜 형태
@@ -295,14 +289,14 @@ function Write() {
                             maxDate={new Date()} // maxDate 이후 날짜 선택 불가
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date)}
-                        /> */}
+                        />
                         <img src={calendar} alt="" />
                     </S.InpDateCont>
                 </S.DateCont>
                 <label htmlFor="scales">상품가격</label>
                 <div>
                     <S.Inp
-                        type="name"
+                        type="number"
                         id="scales"
                         required
                         {...register("sellPrice")}
@@ -313,7 +307,7 @@ function Write() {
 
                 <S.CountBox>
                     <S.Inp
-                        type="name"
+                        type="number"
                         id="scales"
                         required
                         {...register("maxCount")}

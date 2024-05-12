@@ -17,7 +17,7 @@ export const Title = styled.input`
 export const Wrap = styled.form`
     display: flex;
     flex-direction: column;
-    margin-top: 40px;
+    margin: 40px;
 `;
 
 export const ImgEmptyCont = styled.div`
@@ -84,6 +84,7 @@ export const Inp = styled.input`
     border: 1px solid #d9d9d9;
     margin-right: 5px;
     border-radius: 1550px;
+    padding: 0 10px;
 `;
 
 export const InpCont = styled.div`

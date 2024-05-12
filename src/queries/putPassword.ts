@@ -1,13 +1,13 @@
 import { apiClient } from "../libary/reactQueryProvider";
 import { ApiError, ApiResponse, MutationConfigOptions } from "../types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 
-interface Request {
-    productId: number;
-    status: string;
+interface FormData {
+    oldPassword: string;
+    newPassword: string;
+    email: string;
 }
-
 interface RequestEmailResponse {
     product: number;
     status: boolean;
@@ -16,11 +16,11 @@ interface RequestEmailResponse {
 
 type Response = ApiResponse<RequestEmailResponse>;
 
-const URL_PATH = `api/product/status`;
+const URL_PATH = `api/myinfo/password`;
 const MUTATION_KEY = [URL_PATH];
 
-export const postState = async (data: Request) => {
-    const res = await apiClient.put<Request, AxiosResponse<Response>>(
+export const putPassword = async (data: FormData) => {
+    const res = await apiClient.post<FormData, AxiosResponse<Response>>(
         URL_PATH,
         data
     );
@@ -28,15 +28,12 @@ export const postState = async (data: Request) => {
     return res.data;
 };
 
-export const usePostState = (configOptions?: MutationConfigOptions) => {
-    const queryClient = useQueryClient();
-    const info = useMutation<Response, AxiosError<ApiError>, Request, void>({
+export const usePutPassword = (configOptions?: MutationConfigOptions) => {
+    const info = useMutation<Response, AxiosError<ApiError>, FormData, void>({
         mutationKey: MUTATION_KEY,
-        mutationFn: (req) => postState(req),
+        mutationFn: (req) => putPassword(req),
         ...configOptions?.options,
-        onSuccess: (res) => {
-            queryClient.invalidateQueries(["partyList"]);
-        },
+        onSuccess: (res) => {},
         onSettled: () => {
             //   console.log("항상 실행");
         },

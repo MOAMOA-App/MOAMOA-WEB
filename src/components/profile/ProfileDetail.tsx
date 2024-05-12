@@ -1,4 +1,3 @@
-import { useGetJoinList } from "../../queries/getJoinList";
 import deleteBtn from "../../assets/images/delete.svg";
 import chat from "../../assets/images/chat_mobile.svg";
 
@@ -7,30 +6,33 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useDeleteProduct } from "../../queries/deleteProduct";
 import { usePostState } from "../../queries/postState";
-import { useGetProduct } from "../../queries/getProduct";
+import { useProductValue } from "../../atom/product.atom";
+import { useGetPartyList } from "../../queries/getPartyList";
+import { usePutParty } from "../../queries/putParty";
 interface Props {
     checked: string;
 }
 export default function ProfileDetail({ pid }: any) {
-    const order = ["참여자 관리", "게시글 수정"];
-    const [selectedOrder, setSelectedOrder] = useState("참여자 관리");
+    const order: string[] = ["참여자 관리", "게시글 수정"];
+    const stateArr: string[] = ["거래 준비", "거래 진행", "거래 완료"];
+    const [selectedOrder, setSelectedOrder] = useState<string>("참여자 관리");
     const handleCategoryClick = (item: string) => {
         setSelectedOrder(item);
     };
 
-    const { data: good1, isLoading } = useGetProduct(pid);
-
-    const { data: good } = useGetJoinList(pid);
+    const { data: good, isLoading: goodsLoading } = useGetPartyList(pid);
     const { mutateAsync: postState } = usePostState();
     const { mutateAsync: deleteProduct } = useDeleteProduct();
+    const { mutateAsync: putParty } = usePutParty();
+
     const getStateText = (stateCode: any) => {
         switch (stateCode) {
-            case 0:
-                return "거래 준비";
-            case 1:
-                return "거래 진행";
-            case 2:
-                return "거래 완료";
+            case "READY":
+                return stateArr[0];
+            case "IN_PROGRESS":
+                return stateArr[1];
+            case "COMPLETED":
+                return stateArr[2];
             default:
                 return "알 수 없음"; // 이 부분은 상태 코드가 알려지지 않았을 때의 기본값입니다.
         }
@@ -38,6 +40,7 @@ export default function ProfileDetail({ pid }: any) {
 
     const handleDeleteProduct = () => {
         deleteProduct(pid);
+        console.log(good);
     };
 
     const handleState = () => {
@@ -47,7 +50,12 @@ export default function ProfileDetail({ pid }: any) {
         });
     };
 
-    console.log(good1);
+    const handleClick = (id: number) => {
+        putParty({
+            product: Number(pid),
+            pid: Number(id),
+        });
+    };
 
     return (
         <div>
@@ -67,7 +75,7 @@ export default function ProfileDetail({ pid }: any) {
                 <div>
                     <div>
                         <TitleCont>
-                            <h4>{good1?.title}</h4>
+                            <h4>{good?.product.title}</h4>
                             <button onClick={handleDeleteProduct}>
                                 <img src={deleteBtn} alt="" />
                             </button>
@@ -76,13 +84,23 @@ export default function ProfileDetail({ pid }: any) {
                             <div>
                                 <State>거래 상태</State>
                                 <State>
-                                    {good1
-                                        ? getStateText(good1.state)
+                                    {good
+                                        ? getStateText(good?.product.status)
                                         : "로딩 중..."}
+
+                                    <select>
+                                        {stateArr.map((opt) => (
+                                            <option value={opt}>{opt}</option>
+                                        ))}
+                                    </select>
                                 </State>
+
                                 <Btn onClick={handleState}>수정</Btn>
                                 <State>모집현황</State>
-                                <State>3/10</State>
+                                <State>
+                                    {good?.partylist.length}
+                                    /10
+                                </State>
                                 <Btn>수정</Btn>
                             </div>
                             <InfoBtn>참여자 정보 엑셀화</InfoBtn>
@@ -101,13 +119,20 @@ export default function ProfileDetail({ pid }: any) {
                             </tr>
                         </THead>
                         <TBody>
-                            {/* {good?.map((goods) => (
+                            {good?.partylist.map((party: any) => (
                                 <tr>
-                                    <td>{goods.buyer.nick}</td>
+                                    <td>{party.buyer.nick}</td>
                                     <td>
-                                        <Check type="checkbox" id="stay" />
+                                        <Check
+                                            type="checkbox"
+                                            id="stay"
+                                            checked={party.status}
+                                            onChange={() =>
+                                                handleClick(party.id)
+                                            }
+                                        />
                                     </td>
-                                    <td>{goods.count}개</td>
+                                    <td>{party.count}개</td>
                                     <td>
                                         <button>
                                             <img src={chat} alt="" />
@@ -115,7 +140,7 @@ export default function ProfileDetail({ pid }: any) {
                                     </td>
                                     <td>거래취소</td>
                                 </tr>
-                            ))} */}
+                            ))}
                         </TBody>
                     </Table>
                 </div>

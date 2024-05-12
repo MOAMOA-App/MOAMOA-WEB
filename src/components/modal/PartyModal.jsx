@@ -55,7 +55,7 @@ export default function PartyModal({
             product: data.id,
             count: Number(content.count),
             buyer: Number(id),
-            address: "주소",
+            address: content.address,
         };
 
         let res = postParty(resData);
@@ -100,8 +100,14 @@ export default function PartyModal({
                 </S.Count>
                 <S.PriceCont>
                     <img src={money} alt="" />
-                    {data.sellPrice * parseInt(count || 0)}원{" "}
+                    {data.sellPrice * parseInt(count || 0)}원
                 </S.PriceCont>
+                {/* {data.choiceSend === "택배" && (
+                    <>
+                        <div>주소를 입력하세요</div>
+                        <input type="string" {...register("address")} />
+                    </>
+                )} */}
                 <S.BtnCont>
                     <button type="button" onClick={closeModal}>
                         취소
