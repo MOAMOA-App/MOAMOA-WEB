@@ -11,7 +11,7 @@ import ModalPortal from "../../components/modal/ModalPortal";
 import MapModal from "../../components/modal/MapModal";
 import useCustomModal from "../../hooks/useCustomModal";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import * as S from "../../styles/Write.styled";
@@ -267,7 +267,7 @@ function Write() {
                 <label htmlFor="">모집기간</label>
                 <S.DateCont>
                     <S.InpDateCont>
-                        <DatePicker
+                        {/* <DatePicker
                             className="datePicker"
                             dateFormat="yyyy.MM.dd" // 날짜 형태
                             shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
@@ -275,12 +275,12 @@ function Write() {
                             maxDate={new Date()} // maxDate 이후 날짜 선택 불가
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date)}
-                        />
+                        /> */}
                         <img src={calendar} alt="" />
                     </S.InpDateCont>
                     <span>~</span>
                     <S.InpDateCont>
-                        <DatePicker
+                        {/* <DatePicker
                             className="datePicker"
                             calendarClassName="calenderWrapper"
                             dateFormat="yyyy.MM.dd" // 날짜 형태
@@ -289,7 +289,7 @@ function Write() {
                             maxDate={new Date()} // maxDate 이후 날짜 선택 불가
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date)}
-                        />
+                        /> */}
                         <img src={calendar} alt="" />
                     </S.InpDateCont>
                 </S.DateCont>

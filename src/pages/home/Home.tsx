@@ -8,13 +8,14 @@ import * as S from "../../styles/Home.styled";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGetProductList } from "../../queries/getProductList";
 import { Goods } from "@/types/goods.types";
+import { useGetProductSearchList } from "../../queries/getProductSearchList";
 
 export default function Home() {
     const navigate = useNavigate();
     const [isLoadingAll, setIsLoadingAll] = useState(true);
-    const { data: productListQuery1, isLoading: isLoading1 } = useGetProductList('recent');
-    const { data: productListQuery2, isLoading: isLoading2 } = useGetProductList('oldest');
-    const { data: productListQuery3, isLoading: isLoading3 } = useGetProductList('imminent');
+    const { data: productListQuery1, isLoading: isLoading1 } = useGetProductSearchList('recent');
+    const { data: productListQuery2, isLoading: isLoading2 } = useGetProductSearchList('oldest');
+    const { data: productListQuery3, isLoading: isLoading3 } = useGetProductSearchList('imminent');
 
     useEffect(() => {
         setIsLoadingAll(isLoading1 || isLoading2 || isLoading3);
